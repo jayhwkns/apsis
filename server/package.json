@@ -5,10 +5,10 @@
   "license": "ISC",
   "author": "Jay Hawkins",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "src/main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/index.ts"
+    "dev": "node --watch src/main.ts"
   },
   "dependencies": {
     "express": "^5.2.1"
