@@ -6,7 +6,8 @@ import { FeatureFlagAPIManager } from "./utils/feature-flags.ts";
 
 const app = express();
 const routes = express.Router();
-const port = 3000;
+// React takes 3000 by default
+const port = 3070;
 
 const featureFlagManager = new FeatureFlagAPIManager();
 
