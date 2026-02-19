@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
 import fetchFlag from "../utils/fetchFlag";
+import { defaultHeaders, serverUrl } from "../utils/tmpConsts";
 
 type FlagTable = Record<string, boolean>;
 
 export default function FlagInfo() {
-  const email = "user@mail.com";
-  const organization = "Stoke Space"
-  const headers = {
-    "X-Email": email,
-    "X-Organization": organization
-  }
-
   const [featureFlagEnabled, setFeatureFlagEnabled] = useState(false);
 
   const [flagTable, setFlagTable] = useState<FlagTable>({});
 
   // Check if feature flag is enabled
   useEffect(() => {
-    fetchFlag("flag-info", headers)
+    fetchFlag("flag-info", defaultHeaders)
       .then(setFeatureFlagEnabled)
   }, [])
 
@@ -26,11 +20,8 @@ export default function FlagInfo() {
     // Skip fetch if feature flag is disabled
     if (!featureFlagEnabled) return;
 
-    fetch("http://localhost:3070/api/feature-flag-table", {
-      headers: {
-        "X-Email": email,
-        "X-Organization": organization
-      }
+    fetch(`${serverUrl}/api/feature-flag-table`, {
+      headers: defaultHeaders
     })
       .then(async r => await r.json())
       .then(setFlagTable)

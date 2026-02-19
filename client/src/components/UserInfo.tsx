@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react"
 import fetchFlag from "../utils/fetchFlag";
+import { defaultEmail, defaultHeaders, defaultOrganization } from "../utils/tmpConsts";
 
 export default function UserInfo() {
-  const email = "user@mail.com";
-  const organization = "Stoke Space"
-  const headers = {
-    "X-Email": email,
-    "X-Organization": organization
-  }
-
   const [featureFlagEnabled, setFeatureFlagEnabled] = useState(false);
 
   useEffect(() => {
-    fetchFlag("user-info", headers)
+    fetchFlag("user-info", defaultHeaders)
       .then(setFeatureFlagEnabled)
   }, [])
 
@@ -21,8 +15,8 @@ export default function UserInfo() {
       <h1>User Information</h1>
       {featureFlagEnabled ?
         (<>
-          <h2>Email:</h2>{email}
-          <h2>Organization:</h2>{organization}
+          <h2>Email:</h2>{defaultEmail}
+          <h2>Organization:</h2>{defaultOrganization}
         </>)
         :
         <p>Feature coming soon!</p>
