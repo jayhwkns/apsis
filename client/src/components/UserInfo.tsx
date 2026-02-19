@@ -21,9 +21,14 @@ export default function UserInfo() {
   return (
     <>
       <h1>User Information</h1>
-      <p>
-        {featureFlagEnabled ? "true" : "false"}
-      </p>
+      {featureFlagEnabled ?
+        (<>
+          <h2>Email:</h2>{email}
+          <h2>Organization:</h2>{organization}
+        </>)
+        :
+        <p>Feature coming soon!</p>
+      }
     </>
   )
 }
