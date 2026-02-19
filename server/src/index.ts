@@ -16,9 +16,6 @@ app.use((_, res, next) => {
 
 const featureFlags = OpenFeature.getClient();
 
-// Set up an alias so we can easily identify request contexts
-type RequestContext = any;
-
 const FLAG_CONFIGURATION = {
   'with-cows': {
     variants: {
