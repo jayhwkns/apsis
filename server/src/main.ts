@@ -1,6 +1,6 @@
-import express from "express";
+import express, { type Request } from "express";
 import cowsay from "cowsay";
-import { OpenFeature, InMemoryProvider, type EvaluationContext } from "@openfeature/server-sdk";
+import { FeatureFlagAPIManager } from "./utils/feature-flags.ts";
 
 /// Declare and set up express application
 
@@ -8,41 +8,17 @@ const app = express();
 const routes = express.Router();
 const port = 3000;
 
+const featureFlagManager = new FeatureFlagAPIManager();
+
 // Set up middleware
 app.use((_, res, next) => {
   res.setHeader("content-type", "text/plain");
   next();
 }, routes);
 
-const featureFlags = OpenFeature.getClient();
-
-const FLAG_CONFIGURATION = {
-  'with-cows': {
-    variants: {
-      on: true,
-      off: false
-    },
-    disabled: false,
-    defaultVariant: "on",
-    contextEvaluator: (context: EvaluationContext) => {
-      if (context.cow === "Bessie") {
-        return "on";
-      }
-      return "off";
-    }
-  }
-};
-
-const featureFlagProvider = new InMemoryProvider(FLAG_CONFIGURATION);
-
-OpenFeature.setProvider(featureFlagProvider);
-
 // Configure root endpoint for GET
 app.get('/', async (req, res) => {
-  const context: EvaluationContext = {
-    cow: req.get("x-cow") ?? ""
-  };
-  const withCows = await featureFlags.getBooleanValue('with-cows', false, context);
+  const withCows = await featureFlagManager.getFlagEnabled("with-cows", req)
   if (withCows) {
     res.send(cowsay.say({ text: "Hello World!" }));
   } else {
