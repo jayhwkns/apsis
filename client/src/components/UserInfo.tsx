@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react"
+import fetchFlag from "../utils/fetchFlag";
 
 export default function UserInfo() {
   const email = "user@mail.com";
   const organization = "Stoke Space"
+  const headers = {
+    "X-Email": email,
+    "X-Organization": organization
+  }
 
   const [featureFlagEnabled, setFeatureFlagEnabled] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3070/api/feature-enabled/user-info", {
-      headers: {
-        "X-Email": email,
-        "X-Organization": organization
-      }
-    })
-      .then(async r => await r.json())
-      .then(j => j.flagEnabled)
+    fetchFlag("user-info", headers)
       .then(setFeatureFlagEnabled)
   }, [])
 
