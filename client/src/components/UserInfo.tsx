@@ -7,7 +7,7 @@ export default function UserInfo() {
   const [featureFlagEnabled, setFeatureFlagEnabled] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3070/api/flag/show-user", {
+    fetch("http://localhost:3070/api/feature-enabled/show-user", {
       headers: {
         "X-Email": email,
         "X-Organization": organization

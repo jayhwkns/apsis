@@ -30,13 +30,13 @@ app.get('/', async (req, res) => {
   }
 });
 
-app.get('/api/flag/:flagId', async (req, res) => {
+app.get('/api/feature-enabled/:flagId', async (req, res) => {
   const flagId = req.params["flagId"];
   const enabled = await featureFlagManager.getFlagEnabled(flagId, req);
   res.send({ flagEnabled: enabled });
 })
 
-app.get('/api/feature-flags', async (req, res) => {
+app.get('/api/feature-flag-table', async (req, res) => {
   const email = req.get("x-email");
   const organization = req.get("x-organization");
 
