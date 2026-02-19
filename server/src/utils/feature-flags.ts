@@ -21,11 +21,45 @@ const FLAG_CONFIGURATION: FlagConfiguration = {
       on: true,
       off: false
     },
-    disabled: false,
-    defaultVariant: "on",
+    disabled: true,
+    defaultVariant: "off",
     contextEvaluator: (context: EvaluationContext) => {
       if (
         context.cow === "Bessie" ||
+        context.email === "user@mail.com" ||
+        context.organization === "Stoke Space"
+      ) {
+        return "on";
+      }
+      return "off";
+    }
+  },
+  'show-user': {
+    variants: {
+      on: true,
+      off: false
+    },
+    disabled: false,
+    defaultVariant: "off",
+    contextEvaluator: (context: EvaluationContext) => {
+      if (
+        context.email === "user@mail.com" ||
+        context.organization === "Stoke Space"
+      ) {
+        return "on";
+      }
+      return "off";
+    }
+  },
+  'show-feature-flags': {
+    variants: {
+      on: true,
+      off: false
+    },
+    disabled: false,
+    defaultVariant: "off",
+    contextEvaluator: (context: EvaluationContext) => {
+      if (
         context.email === "user@mail.com" ||
         context.organization === "Stoke Space"
       ) {
