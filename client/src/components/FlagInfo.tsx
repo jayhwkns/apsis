@@ -60,7 +60,7 @@ export default function FlagInfo() {
         </>
       ) : (
         <p>Feature coming soon!</p>
-      )})
+      )}
     </>
   )
 }
