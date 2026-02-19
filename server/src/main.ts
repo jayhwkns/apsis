@@ -26,6 +26,17 @@ app.get('/', async (req, res) => {
   }
 });
 
+app.get('/api/feature-flags', async (req, res) => {
+  const email = req.get("x-email");
+  const organization = req.get("x-organization");
+
+  const body = await featureFlagManager.getFeatureFlagsTableForUser(
+    email, organization
+  );
+
+  res.send(body);
+})
+
 app.listen(port, () => {
   console.log(`Apsis server listening on port ${port}`);
 });
