@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import FlagInfo from './components/FlagInfo';
 import UserInfo from './components/UserInfo';
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <UserInfo />
+        <FlagInfo />
       </header>
     </div>
   );
