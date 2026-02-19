@@ -48,7 +48,7 @@ export default function FlagInfo() {
               <th>Enabled</th>
             </tr>
             {Object.entries(flagTable).map(e =>
-              <tr>
+              <tr key={`feature-flag-row-${e}`}>
                 <td>{e[0]}</td>
                 <td>{e[1] ? "true" : "false"}</td>
               </tr>
