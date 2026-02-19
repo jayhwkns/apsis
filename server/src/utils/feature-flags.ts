@@ -34,7 +34,7 @@ const FLAG_CONFIGURATION: FlagConfiguration = {
       return "off";
     }
   },
-  'show-user': {
+  'user-info': {
     variants: {
       on: true,
       off: false
@@ -51,7 +51,7 @@ const FLAG_CONFIGURATION: FlagConfiguration = {
       return "off";
     }
   },
-  'show-feature-flags': {
+  'flag-info': {
     variants: {
       on: true,
       off: false
