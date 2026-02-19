@@ -1,5 +1,6 @@
-import express, { type Request } from "express";
+import express from "express";
 import cowsay from "cowsay";
+import cors from "cors";
 import { FeatureFlagAPIManager } from "./utils/feature-flags.ts";
 
 /// Declare and set up express application
@@ -10,6 +11,8 @@ const routes = express.Router();
 const port = 3070;
 
 const featureFlagManager = new FeatureFlagAPIManager();
+
+app.use(cors())
 
 // Set up middleware
 app.use((_, res, next) => {
