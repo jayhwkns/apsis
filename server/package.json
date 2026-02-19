@@ -11,9 +11,13 @@
     "dev": "node --watch src/main.ts"
   },
   "dependencies": {
+    "@openfeature/server-sdk": "^1.20.2",
+    "cors": "^2.8.6",
+    "cowsay": "^1.6.0",
     "express": "^5.2.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6"
   }
 }
