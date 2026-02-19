@@ -12,7 +12,7 @@ export default function FlagInfo() {
 
   // Check if feature flag is enabled
   useEffect(() => {
-    fetch("http://localhost:3070/api/flag/show-feature-flags", {
+    fetch("http://localhost:3070/api/feature-enabled/show-feature-flags", {
       headers: {
         "X-Email": email,
         "X-Organization": organization
@@ -29,7 +29,7 @@ export default function FlagInfo() {
     // Skip fetch if feature flag is disabled
     if (!featureFlagEnabled) return;
 
-    fetch("http://localhost:3070/api/feature-flags", {
+    fetch("http://localhost:3070/api/feature-flag-table", {
       headers: {
         "X-Email": email,
         "X-Organization": organization
