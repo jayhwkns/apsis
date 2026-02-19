@@ -4,7 +4,7 @@
   "description": "A modern wrapper for NASA's Astronomy Picture of the Day website",
   "license": "ISC",
   "author": "Jay Hawkins",
-  "type": "commonjs",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
   }
 }
