@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import FlagInfo from './components/FlagInfo';
-import UserInfo from './components/UserInfo';
+import FlagInfo from '@/components/FlagInfo';
+import UserInfo from '@/components/UserInfo';
 
 function App() {
   return (
