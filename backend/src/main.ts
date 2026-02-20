@@ -1,8 +1,8 @@
 import express from "express";
 import cowsay from "cowsay";
 import cors from "cors";
-import { FeatureFlagAPIManager } from "./utils/featureFlags.ts";
-import { ApodScraper } from "./utils/apodScraper.ts";
+import { FeatureFlagAPIManager } from "@/utils/featureFlags.ts";
+import { ApodScraper } from "@/utils/apodScraper.ts";
 
 /// Declare and set up express application
 
