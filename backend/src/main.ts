@@ -12,7 +12,7 @@ const routes = express.Router();
 const port = 3070;
 
 const featureFlagManager = new FeatureFlagAPIManager();
-const apodScraper = new ApodScraper(true);
+const apodScraper = new ApodScraper(false);
 
 app.use(cors())
 

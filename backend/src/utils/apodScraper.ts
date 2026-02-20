@@ -7,6 +7,7 @@ const APOD_URL = "https://apod.nasa.gov"
 
 const turndownService = new TurndownService();
 
+
 interface ApodData {
   date: Date;
   title: string;
@@ -25,64 +26,73 @@ interface ApodData {
   imageLink: string | undefined;
 }
 
-class ApodScraperError extends Error {
-  constructor(field: string) {
-    super(`${field} could not be parsed from apod webpage`);
-    this.name = "ApodScraperError";
-    Object.setPrototypeOf(this, ApodScraperError.prototype);
-  }
+
+// Plainly extracted web data
+interface ApodWebData {
+  date: string | undefined;
+  title: string | undefined;
+  creditAndCopyright: string | undefined;
+  creditLinks: string[];
+  creditText: string[];
+  description: string | undefined;
+  imageLink: string | undefined;
 }
 
-export class ApodScraper {
-  // Will refrain from sending the image link when image is copyrighted.
-  // This is mostly out of abundance of caution, as I am not a legal expert.
-  copyrightRestrict: boolean;
 
-  constructor(allowCopyright: boolean) {
-    this.copyrightRestrict = allowCopyright;
+// Helper for the logic of getting raw string data in a type-safe format
+class ApodWebDataExtractor {
+  webData: ApodWebData;
+  copyrightRestrict: boolean;
+  constructor(webData: ApodWebData, copyrightRestrict: boolean) {
+    this.webData = webData;
+    this.copyrightRestrict = copyrightRestrict;
   }
 
-  public async today() {
-    // Go to apod and get html
-    const res = await fetch(APOD_URL);
-    const html = await res.text();
+  public buildApodData(): ApodData {
+    const copyright = this.isCopyright();
+    return {
+      date: this.getDate(),
+      title: this.getTitle(),
+      credits: this.getCredits(),
+      copyright: copyright,
+      description: this.getDescription(),
+      imageLink: this.getImageLink(copyright)
+    }
+  }
 
-    // Parse using cheerio
-    const $ = cheerio.load(html);
-
-    const data = $.extract({
-      date: "center > p:eq(1)",
-      title: "center > b",
-      creditAndCopyright: "center > b:eq(1)",
-      creditLinks: [{
-        selector: "center > a",
-        value: "href"
-      }],
-      creditText: ["center > a"],
-      imageLink: {
-        selector: "img",
-        value: "src"
-      }
-    });
-
-    if (!data.date) {
+  getDate(): Date {
+    if (!this.webData.date) {
       throw new ApodScraperError("Date");
     }
     // Date constructor already supports the format it's in
-    const date = new Date(data.date.trim());
+    const date = new Date(this.webData.date.trim());
+    if (isNaN(date.getTime())) {
+      throw new Error(`Date "${this.webData.date}" is in an invalid format!`);
+    }
+    return date;
+  }
 
-    if (!data.title) {
+  getTitle(): string {
+    if (!this.webData.title) {
       throw new ApodScraperError("Title");
     }
-    const title = data.title.trim();
+    const title = this.webData.title.trim();
+    return title;
+  }
 
-    if (!data.creditAndCopyright) {
+  isCopyright(): boolean {
+    if (!this.webData.creditAndCopyright) {
       throw new ApodScraperError("Credit & Copyright");
     }
-    const copyright = data.creditAndCopyright
+    const copyright = this.webData.creditAndCopyright
       .toUpperCase()
       .includes("COPYRIGHT");
 
+    return copyright;
+  }
+
+  getCredits() {
+    const data = this.webData;
     if (!data.creditLinks || data.creditLinks.length < 2) {
       throw new ApodScraperError("Links for credits");
     }
@@ -104,35 +114,90 @@ export class ApodScraper {
       }
     };
 
-    const description = $("body > p").html();
-    if (!description) {
+    return credits;
+  }
+
+  getDescription(): string {
+    if (!this.webData.description) {
       throw new ApodScraperError("Description");
     }
     // This bit will be a little redundant in our front-end
     const remove = "**Explanation:**"
     // Convert to markdown.
     // This saves on payload, can make future storage more efficient and
-    // effectively sanitizes the HTML data.
-    const descriptionMarkdown = turndownService.turndown(description)
+    // effectively sanitizes the HTML.
+    const descriptionMarkdown = turndownService.turndown(this.webData.description)
       .replace(remove, "")
       .trim();
 
+    return descriptionMarkdown;
+  }
+
+  getImageLink(copyright: boolean): string | undefined {
+    var imageLink = this.webData.imageLink;
     const copyrightProtected = copyright && this.copyrightRestrict;
-    if (!copyrightProtected && !data.imageLink) {
+    if (!copyrightProtected && !imageLink) {
       throw new ApodScraperError("Image link");
     }
-    const imageLink = copyrightProtected ? undefined : data.imageLink;
+    imageLink = copyrightProtected ? undefined : imageLink;
+    return imageLink;
+  }
+}
 
-    // Construct data
-    const apodData: ApodData = {
-      date: date,
-      title: title,
-      credits: credits,
-      copyright: copyright,
-      description: descriptionMarkdown,
-      imageLink: imageLink
-    }
 
-    return apodData;
+class ApodScraperError extends Error {
+  constructor(field: string) {
+    super(`${field} could not be parsed from apod webpage`);
+    this.name = "ApodScraperError";
+    Object.setPrototypeOf(this, ApodScraperError.prototype);
+  }
+}
+
+
+export class ApodScraper {
+  // Will refrain from sending the image link when image is copyrighted.
+  // This is mostly out of abundance of caution, as I am not a legal expert.
+  copyrightRestrict: boolean;
+
+  constructor(allowCopyright: boolean) {
+    this.copyrightRestrict = allowCopyright;
+  }
+
+  async getApodWebDataExtractor(url: string) {
+    // Go to apod and get html
+    const res = await fetch(url);
+    const html = await res.text();
+
+    // Parse using cheerio
+    const $ = cheerio.load(html);
+
+    const data: ApodWebData = $.extract({
+      date: "center > p:eq(1)",
+      title: "center > b",
+      creditAndCopyright: "center > b:eq(1)",
+      creditLinks: [{
+        selector: "center > a",
+        value: "href"
+      }],
+      creditText: ["center > a"],
+      description: {
+        selector: "body > p",
+        value: "innerHTML"
+      },
+      imageLink: {
+        selector: "img",
+        value: "src"
+      }
+    });
+
+    return new ApodWebDataExtractor(data, this.copyrightRestrict);
+  }
+
+  async getApodDataFromUrl(url: string) {
+    return (await this.getApodWebDataExtractor(url)).buildApodData();
+  }
+
+  public async today(): Promise<ApodData> {
+    return await this.getApodDataFromUrl(APOD_URL);
   }
 }
