@@ -15,10 +15,12 @@
     "cheerio": "^1.2.0",
     "cors": "^2.8.6",
     "cowsay": "^1.6.0",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "turndown": "^7.2.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "@types/turndown": "^5.0.6"
   }
 }
