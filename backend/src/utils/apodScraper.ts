@@ -1,31 +1,12 @@
 // Scrapes pages in the `apod.nasa.gov` domain for image links and metadata
 import * as cheerio from "cheerio";
 import TurndownService from "turndown";
+import type Apod from "@/types/apod.ts";
 
 // TODO: make configurable so people can use different mirrors
 const APOD_URL = "https://apod.nasa.gov"
 
 const turndownService = new TurndownService();
-
-
-interface ApodData {
-  date: Date;
-  title: string;
-  credits: {
-    image: {
-      name: string;
-      link: string;
-    };
-    text: {
-      name: string;
-      link: string;
-    };
-  };
-  copyright: boolean;
-  description: string;
-  imageLink: string | undefined;
-}
-
 
 // Plainly extracted web data
 interface ApodWebData {
@@ -48,7 +29,7 @@ class ApodWebDataExtractor {
     this.copyrightRestrict = copyrightRestrict;
   }
 
-  public buildApodData(): ApodData {
+  public buildApodData(): Apod {
     const copyright = this.isCopyright();
     return {
       date: this.getDate(),
@@ -193,11 +174,11 @@ export class ApodScraper {
     return new ApodWebDataExtractor(data, this.copyrightRestrict);
   }
 
-  async getApodDataFromUrl(url: string) {
+  async getApodFromUrl(url: string) {
     return (await this.getApodWebDataExtractor(url)).buildApodData();
   }
 
-  public async today(): Promise<ApodData> {
-    return await this.getApodDataFromUrl(APOD_URL);
+  public async today(): Promise<Apod> {
+    return await this.getApodFromUrl(APOD_URL);
   }
 }
