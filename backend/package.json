@@ -1,5 +1,5 @@
 {
-  "name": "apsis",
+  "name": "apsis-backend",
   "version": "0.0.1",
   "description": "A modern wrapper for NASA's Astronomy Picture of the Day website",
   "license": "ISC",
