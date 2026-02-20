@@ -1,5 +1,5 @@
 {
-  "name": "apsis-client",
+  "name": "apsis-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
