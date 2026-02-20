@@ -1,7 +1,7 @@
 import express from "express";
 import cowsay from "cowsay";
 import cors from "cors";
-import { FeatureFlagAPIManager } from "./utils/feature-flags.ts";
+import { FeatureFlagAPIManager } from "./utils/featureFlags.ts";
 
 /// Declare and set up express application
 
