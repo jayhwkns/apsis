@@ -2,6 +2,7 @@ import express from "express";
 import cowsay from "cowsay";
 import cors from "cors";
 import { FeatureFlagAPIManager } from "./utils/featureFlags.ts";
+import { ApodScraper } from "./utils/apodScraper.ts";
 
 /// Declare and set up express application
 
@@ -11,6 +12,7 @@ const routes = express.Router();
 const port = 3070;
 
 const featureFlagManager = new FeatureFlagAPIManager();
+const apodScraper = new ApodScraper(false);
 
 app.use(cors())
 
@@ -45,6 +47,11 @@ app.get('/api/feature-flag-table', async (req, res) => {
   );
 
   res.send(body);
+})
+
+app.get("/api/apod/today", async (req, res) => {
+  await apodScraper.today();
+  res.send("NOT IMPLEMENTED");
 })
 
 app.listen(port, () => {
