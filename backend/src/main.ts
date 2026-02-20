@@ -12,7 +12,7 @@ const routes = express.Router();
 const port = 3070;
 
 const featureFlagManager = new FeatureFlagAPIManager();
-const apodScraper = new ApodScraper(false);
+const apodScraper = new ApodScraper(true);
 
 app.use(cors())
 
@@ -50,8 +50,7 @@ app.get('/api/feature-flag-table', async (req, res) => {
 })
 
 app.get("/api/apod/today", async (req, res) => {
-  await apodScraper.today();
-  res.send("NOT IMPLEMENTED");
+  res.send(await apodScraper.today());
 })
 
 app.listen(port, () => {
