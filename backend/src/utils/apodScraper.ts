@@ -198,7 +198,6 @@ export class ApodScraper {
     const dd = String(date.getDate()).padStart(2, '0');
 
     const url = `${APOD_URL}/apod/ap${yy}${mm}${dd}.html`;
-    console.log(url);
     return await this.getApodFromUrl(url)
   }
 }
