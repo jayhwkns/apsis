@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import FlagInfo from '@/components/FlagInfo';
 import UserInfo from '@/components/UserInfo';
-import ApodDisplay from '@/components/ApodDisplay';
+import ApodContainer from '@/components/ApodContainer';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <header className="App-header">
         <UserInfo />
         <FlagInfo />
-        <ApodDisplay />
+        <ApodContainer />
       </header>
     </div>
   );
