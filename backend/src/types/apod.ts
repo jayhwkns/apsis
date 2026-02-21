@@ -5,12 +5,13 @@ export default interface Apod {
     // An image can have multiple people credited
     image: {
       name: string;
-      link: string;
+      // Credits don't always have a link
+      link: string | undefined;
     }[];
     // Text might not be credited if it wasn't from a volunteer
     // TODO: Text credits often have credentials (ex. "(NASA, GSFC)") that are
     // linked.
-    text?: {
+    text: {
       name: string;
       link: string;
     } | undefined;
