@@ -8,16 +8,26 @@ type ApodDisplayState = "loading" | Apod;
 
 const APOD_URL = "https://apod.nasa.gov"
 
-export default function ApodContainer() {
+// Dependency list tells the container what variables to refresh on
+export default function ApodContainer({ date }: { date: Date }) {
   const [displayState, setDisplayState] = useState<ApodDisplayState>("loading");
 
   useEffect(() => {
-    fetch(`${serverUrl}/api/apod/today`)
+    setDisplayState("loading");
+    const today = date.getDate() === new Date().getDate();
+    const endpoint = today ? "apod/today" : "apod"
+    fetch(`${serverUrl}/api/${endpoint}`, {
+      method: today ? "GET" : "POST",
+      headers: today ? undefined : {
+        "Content-Type": "application/json"
+      },
+      body: today ? undefined : JSON.stringify({ date: date })
+    })
       .then(async r => await r.json())
       .then(setDisplayState);
-  }, [])
+  }, [date])
 
-  return displayState == "loading" ? (
+  return displayState === "loading" ? (
     <h1>Loading Astronomy Picture of the Day...</h1>
   ) : (
     <ApodDisplay apod={displayState} />
@@ -32,7 +42,7 @@ function ApodDisplay({ apod }: { apod: Apod }) {
   return (
     <>
       <h1>{apod.title}</h1>
-      <img src={`${APOD_URL}/${apod.imageLink}`} />
+      <img src={`${APOD_URL}/${apod.imageLink}`} alt={apod.title} />
       <p>
         Image Credit: <a href={imageCredits.link}>{imageCredits.name}</a>
       </p>

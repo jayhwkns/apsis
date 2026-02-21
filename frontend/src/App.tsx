@@ -10,7 +10,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <DateDisplay date={date} setDate={setDate} />
-        <ApodContainer />
+        <ApodContainer date={date} />
       </header>
     </div>
   );
