@@ -3,6 +3,7 @@ export default function DateDisplay(
 ) {
   const monthName = date.toLocaleDateString("default", { month: "long" });
   const day = ordinalSuffix(date.getDate());
+  const today = isToday(date);
   return (
     <div>
       {/* This line looks terrible, but it makes sense trust.
@@ -12,10 +13,17 @@ export default function DateDisplay(
       */}
       <button onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}> Yesterday </button>
       {`${date.getFullYear()} ${monthName} ${day}`}
-      {date.getDate() === new Date().getDate() ? " (Today)" : ""}
-      <button onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}> Tomorrow </button>
+      {today ? " (Today)" : ""}
+      <button disabled={today} onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}> Tomorrow </button>
     </div>
   )
+}
+
+function isToday(date: Date) {
+  const today = new Date();
+  return date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate();
 }
 
 function ordinalSuffix(n: number): string {
