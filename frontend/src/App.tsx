@@ -1,15 +1,15 @@
-import React from 'react';
+import { useState } from 'react';
 import './App.css';
-import FlagInfo from '@/components/FlagInfo';
-import UserInfo from '@/components/UserInfo';
 import ApodContainer from '@/components/ApodContainer';
+import DateDisplay from '@/components/DateDisplay';
 
 function App() {
+  const [date, setDate] = useState(new Date());
+
   return (
     <div className="App">
       <header className="App-header">
-        <UserInfo />
-        <FlagInfo />
+        <DateDisplay date={date} setDate={setDate} />
         <ApodContainer />
       </header>
     </div>
