@@ -59,7 +59,12 @@ app.get("/api/apod/today", async (_, res) => {
 app.post("/api/apod", async (req, res) => {
   const date = new Date(req.body.date);
   const apod = await apodScraper.fromDay(date)
-    .catch((e) => console.error(e));
+    .catch(async (e) => {
+      console.error(e);
+      // Send today's apod as fallback (in most cases this is when trying to
+      // access the future)
+      res.send(await apodScraper.today());
+    });
   res.send(apod);
 })
 
