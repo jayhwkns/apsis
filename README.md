@@ -23,7 +23,7 @@ npm run dev
 - [x] Display today's APOD
 - [x] Display information from today's APOD using a simple web-scraper
 - [x] Select other days, go back and forward a day
-- [ ] Add functionality for storing/caching APOD images and metadata
+- [x] Add functionality for storing/caching APOD images and metadata
 
 ## Stretch-Goals
 
