@@ -85,10 +85,10 @@ class ApodWebDataExtractor {
     const imgCreditName = data.creditText[0]!;
     const textCreditName = data.creditText[1]!;
     const credits = {
-      image: {
+      image: [{
         name: imgCreditName,
         link: imgCreditLink
-      },
+      }],
       text: {
         name: textCreditName,
         link: textCreditLink
