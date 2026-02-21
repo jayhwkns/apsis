@@ -2,6 +2,7 @@
 import * as cheerio from "cheerio";
 import TurndownService from "turndown";
 import type Apod from "@/types/apod.ts";
+import { abbreviate } from "./dateUtils.ts";
 
 // TODO: make configurable so people can use different mirrors
 const APOD_URL = "https://apod.nasa.gov"
@@ -227,12 +228,7 @@ export class ApodScraper {
   }
 
   public async fromDay(date: Date): Promise<Apod> {
-    const yy = String(date.getFullYear() % 100).padStart(2, '0');
-    // Date returns date index, hence the "+ 1"
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-
-    const url = `${APOD_URL}/apod/ap${yy}${mm}${dd}.html`;
+    const url = `${APOD_URL}/apod/ap${abbreviate(date)}.html`;
     return await this.getApodFromUrl(url)
   }
 }

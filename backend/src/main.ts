@@ -3,6 +3,7 @@ import cowsay from "cowsay";
 import cors from "cors";
 import { FeatureFlagAPIManager } from "@/utils/featureFlags.ts";
 import { ApodScraper } from "@/utils/apodScraper.ts";
+import { ApodCache } from "./utils/apodCache.ts";
 
 /// Declare and set up express application
 
@@ -13,6 +14,8 @@ const port = 3070;
 
 const featureFlagManager = new FeatureFlagAPIManager();
 const apodScraper = new ApodScraper({ copyrightRestrict: false });
+const apodCache = new ApodCache({ cacheDir: "./cache" });
+apodCache.initCache();
 
 app.use(cors())
 
@@ -53,19 +56,27 @@ app.get('/api/feature-flag-table', async (req, res) => {
 })
 
 app.get("/api/apod/today", async (_, res) => {
-  res.send(await apodScraper.today());
+  var apodMd;
+  const today = new Date();
+  if (apodCache.has(today)) {
+    apodMd = await apodCache.getApod(today)
+  } else {
+    const apodObj = await apodScraper.today();
+    apodMd = await apodCache.writeApod(apodObj);
+  }
+  res.send(apodMd);
 })
 
 app.post("/api/apod", async (req, res) => {
   const date = new Date(req.body.date);
-  const apod = await apodScraper.fromDay(date)
-    .catch(async (e) => {
-      console.error(e);
-      // Send today's apod as fallback (in most cases this is when trying to
-      // access the future)
-      res.send(await apodScraper.today());
-    });
-  res.send(apod);
+  var apodMd;
+  if (apodCache.has(date)) {
+    apodMd = await apodCache.getApod(date)
+  } else {
+    const apodObj = await apodScraper.fromDay(date);
+    apodMd = await apodCache.writeApod(apodObj);
+  }
+  res.send(apodMd);
 })
 
 app.listen(port, () => {
