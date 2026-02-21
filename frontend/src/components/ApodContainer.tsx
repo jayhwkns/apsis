@@ -1,4 +1,5 @@
 import { serverUrl } from "@/utils/tmpConsts";
+import mdToApod from "@/utils/mdToApod";
 import type Apod from "@backend-types/apod"
 import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
@@ -23,7 +24,7 @@ export default function ApodContainer({ date }: { date: Date }) {
       },
       body: today ? undefined : JSON.stringify({ date: date })
     })
-      .then(async r => await r.json())
+      .then(async r => mdToApod(await r.text()))
       .then(setDisplayState);
   }, [date])
 
