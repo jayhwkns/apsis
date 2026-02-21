@@ -44,13 +44,18 @@ function ApodDisplay({ apod }: { apod: Apod }) {
       <h1>{apod.title}</h1>
       <img src={`${APOD_URL}/${apod.imageLink}`} alt={apod.title} />
       <p>
-        Image Credit: <a href={imageCredits.link}>{imageCredits.name}</a>
+        Image Credit:
+        <ul>
+          {imageCredits.map((e) =>
+            <li key={`imgCredit-${e.name}`}><a href={e.link}>{e.name}</a></li>
+          )}
+        </ul>
       </p>
       {/* We can trust this HTML because we sanitized it */}
       <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(apod.description) as string) }} />
-      <p>
+      {textCredits && (<p>
         Text Credit: <a href={textCredits.link}>{textCredits.name}</a>
-      </p>
+      </p>)}
     </>
   )
 }
