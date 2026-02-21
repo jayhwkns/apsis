@@ -134,14 +134,20 @@ class ApodScraperError extends Error {
   }
 }
 
-
-export class ApodScraper {
+interface ApodScraperConfig {
   // Will refrain from sending the image link when image is copyrighted.
   // This is mostly out of abundance of caution, as I am not a legal expert.
   copyrightRestrict: boolean;
+}
 
-  constructor(allowCopyright: boolean) {
-    this.copyrightRestrict = allowCopyright;
+export class ApodScraper {
+  config: ApodScraperConfig = {
+    copyrightRestrict: true
+  };
+
+  constructor(config?: Partial<ApodScraperConfig>) {
+    if (!config) return;
+    this.config = { ...this.config, ...config };
   }
 
   async getApodWebDataExtractor(url: string) {
@@ -171,7 +177,7 @@ export class ApodScraper {
       }
     });
 
-    return new ApodWebDataExtractor(data, this.copyrightRestrict);
+    return new ApodWebDataExtractor(data, this.config.copyrightRestrict);
   }
 
   async getApodFromUrl(url: string) {
