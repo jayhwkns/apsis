@@ -25,12 +25,13 @@
       "@/*": [
         "./src/*"
       ],
-      "@backend-types": [
+      "@backend-types/*": [
         "../backend/src/types/*"
       ]
     }
   },
   "include": [
-    "src"
+    "src",
+    "../backend/src/types"
   ]
 }
