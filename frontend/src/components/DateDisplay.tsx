@@ -12,6 +12,7 @@ export default function DateDisplay(
       */}
       <button onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}> Yesterday </button>
       {`${date.getFullYear()} ${monthName} ${day}`}
+      {date.getDate() === new Date().getDate() ? " (Today)" : ""}
       <button onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}> Tomorrow </button>
     </div>
   )

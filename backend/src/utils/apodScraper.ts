@@ -193,10 +193,12 @@ export class ApodScraper {
 
   public async fromDay(date: Date): Promise<Apod> {
     const yy = String(date.getFullYear() % 100).padStart(2, '0');
-    const mm = String(date.getMonth()).padStart(2, '0');
-    const dd = String(date.getDay()).padStart(2, '0');
+    // Date returns date index, hence the "+ 1"
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
 
     const url = `${APOD_URL}/apod/ap${yy}${mm}${dd}.html`;
+    console.log(url);
     return await this.getApodFromUrl(url)
   }
 }
