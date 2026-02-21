@@ -16,6 +16,9 @@ const apodScraper = new ApodScraper({ copyrightRestrict: false });
 
 app.use(cors())
 
+// For parsing application/json
+app.use(express.json());
+
 // Set up middleware
 app.use((_, res, next) => {
   res.setHeader("content-type", "text/plain");
@@ -49,8 +52,15 @@ app.get('/api/feature-flag-table', async (req, res) => {
   res.send(body);
 })
 
-app.get("/api/apod/today", async (req, res) => {
+app.get("/api/apod/today", async (_, res) => {
   res.send(await apodScraper.today());
+})
+
+app.post("/api/apod", async (req, res) => {
+  const date = new Date(req.body.date);
+  const apod = await apodScraper.fromDay(date)
+    .catch((e) => console.error(e));
+  res.send(apod);
 })
 
 app.listen(port, () => {
