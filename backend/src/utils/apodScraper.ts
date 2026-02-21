@@ -12,9 +12,8 @@ const turndownService = new TurndownService();
 interface ApodWebData {
   date: string | undefined;
   title: string | undefined;
-  creditAndCopyright: string | undefined;
-  creditLinks: string[];
-  creditText: string[];
+  // All centered HTML data below the image
+  imageFooter: string | undefined;
   description: string | undefined;
   imageLink: string | undefined;
 }
@@ -30,15 +29,28 @@ class ApodWebDataExtractor {
   }
 
   public buildApodData(): Apod {
-    const copyright = this.isCopyright();
+    const imageFooter = this.parseImageFooter();
     return {
       date: this.getDate(),
-      title: this.getTitle(),
-      credits: this.getCredits(),
-      copyright: copyright,
+      title: imageFooter.title,
+      credits: imageFooter.credits,
+      copyright: imageFooter.copyright,
       description: this.getDescription(),
-      imageLink: this.getImageLink(copyright)
+      imageLink: this.getImageLink(imageFooter.copyright)
     }
+  }
+
+  parseImageFooter() {
+    const imageFooter = this.webData.imageFooter;
+    if (!imageFooter) {
+      throw new ApodScraperError("Image Footer")
+    }
+
+    return {
+      copyright: this.isCopyright(imageFooter),
+      title: this.getTitle(imageFooter),
+      credits: this.getCredits(imageFooter)
+    };
   }
 
   getDate(): Date {
@@ -53,47 +65,72 @@ class ApodWebDataExtractor {
     return date;
   }
 
-  getTitle(): string {
-    if (!this.webData.title) {
+  getTitle(imageFooter: string): string {
+    const $ = cheerio.load(imageFooter);
+    const title = $("b").prop("innerText")?.trim();
+    if (!title) {
       throw new ApodScraperError("Title");
     }
-    const title = this.webData.title.trim();
     return title;
   }
 
-  isCopyright(): boolean {
-    if (!this.webData.creditAndCopyright) {
-      throw new ApodScraperError("Credit & Copyright");
-    }
-    const copyright = this.webData.creditAndCopyright
+  isCopyright(imageFooter: string): boolean {
+    const copyright = imageFooter
       .toUpperCase()
       .includes("COPYRIGHT");
 
     return copyright;
   }
 
-  getCredits() {
-    const data = this.webData;
-    if (!data.creditLinks || data.creditLinks.length < 2) {
-      throw new ApodScraperError("Links for credits");
+  getCredits(imageFooter: string) {
+    var imageCreditsHtml = imageFooter;
+    var textCredits = undefined;
+    if (imageFooter.includes("Text:")) {
+      const split = imageFooter.split("Text:");
+      imageCreditsHtml = split[0]!
+      const after = split[1]!;
+      const $ = cheerio.load(after);
+      const a = $("a");
+      const link = a.attr('href') ?? "";
+      const name = a.prop("innerText") ?? "";
+      textCredits = {
+        name: name,
+        link: link
+      };
     }
-    const imgCreditLink = data.creditLinks[0]!;
-    const textCreditLink = data.creditLinks[1]!;
-    if (!data.creditText || data.creditText.length < 2) {
-      throw new ApodScraperError("Links for credits");
+
+    // Remove values in parenthesis, they are not involved in crediting the
+    // person, but the organization that person is a part of.
+    const clearedHtml = imageCreditsHtml.replace(new RegExp("\\(.*\\)"), "");
+    const $ = cheerio.load(clearedHtml);
+    const a = $("a").get();
+    const imgCredits: {
+      name: string;
+      link: string | undefined
+    }[] = [];
+    if (a.length === 0) {
+      // If unlinked, all names will be in a single element
+      const name: string = $("b:get(1)").parent().last().prop("innerText")!;
+      imgCredits.push({ name: name, link: undefined });
+    } else {
+      a.forEach((e) => {
+        const name: string = (e.firstChild as any).data;
+        if (name.toUpperCase().includes("COPYRIGHT")) {
+          return;
+        }
+        const link = e.attribs["href"];
+        const credit = {
+          name: name,
+          link: link
+        };
+        imgCredits.push(credit);
+      })
     }
-    const imgCreditName = data.creditText[0]!;
-    const textCreditName = data.creditText[1]!;
+
     const credits = {
-      image: [{
-        name: imgCreditName,
-        link: imgCreditLink
-      }],
-      text: {
-        name: textCreditName,
-        link: textCreditLink
-      }
-    };
+      image: imgCredits,
+      text: textCredits
+    }
 
     return credits;
   }
@@ -150,7 +187,7 @@ export class ApodScraper {
     this.config = { ...this.config, ...config };
   }
 
-  async getApodWebDataExtractor(url: string) {
+  async getApodWebDataExtractor(url: string): Promise<ApodWebDataExtractor> {
     // Go to apod and get html
     const res = await fetch(url);
     if (!res.ok) {
@@ -164,12 +201,10 @@ export class ApodScraper {
     const data: ApodWebData = $.extract({
       date: "center > p:eq(1)",
       title: "center > b",
-      creditAndCopyright: "center > b:eq(1)",
-      creditLinks: [{
-        selector: "center > a",
-        value: "href"
-      }],
-      creditText: ["center > a"],
+      imageFooter: {
+        selector: "center:eq(1)",
+        value: "innerHTML"
+      },
       description: {
         selector: "body > p",
         value: "innerHTML"
