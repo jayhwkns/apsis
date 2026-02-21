@@ -20,8 +20,8 @@ npm run dev
 # Progress
 
 - [x] Simple Feature flag system using OpenFeature and `InMemoryProvider`
-- [ ] Display today's APOD
-- [ ] Display information from today's APOD using a simple web-scraper
+- [x] Display today's APOD
+- [x] Display information from today's APOD using a simple web-scraper
 - [ ] Select other days, go back and forward a day
 - [ ] Add functionality for storing/caching APOD images and metadata
 
