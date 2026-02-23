@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
-import fetchFlag from "../utils/fetchFlag";
+import fetchFlag from "@/utils/fetchFlag";
 import { defaultEmail, defaultHeaders, defaultOrganization } from "../utils/tmpConsts";
+import { createEffect, createSignal } from "solid-js";
 
 export default function UserInfo() {
-  const [featureFlagEnabled, setFeatureFlagEnabled] = useState(false);
+  const [featureFlagEnabled, setFeatureFlagEnabled] = createSignal(false);
 
-  useEffect(() => {
+  createEffect(() => {
     fetchFlag("user-info", defaultHeaders)
       .then(setFeatureFlagEnabled)
   }, [])
@@ -13,7 +13,7 @@ export default function UserInfo() {
   return (
     <>
       <h1>User Information</h1>
-      {featureFlagEnabled ?
+      {featureFlagEnabled() ?
         (<>
           <h2>Email:</h2>{defaultEmail}
           <h2>Organization:</h2>{defaultOrganization}

@@ -1,4 +1,4 @@
-import { serverUrl } from "./tmpConsts"
+import { serverUrl } from "@/utils/tmpConsts"
 
 export default async function fetchFlag(
   flagId: string,

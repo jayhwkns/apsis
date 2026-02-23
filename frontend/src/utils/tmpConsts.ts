@@ -3,7 +3,7 @@
 // other features
 
 export const defaultEmail = "user@mail.com";
-export const defaultOrganization = "Stoke Space";
+export const defaultOrganization = "Space";
 
 export const defaultHeaders = {
   "X-Email": defaultEmail,
