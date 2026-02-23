@@ -7,14 +7,20 @@ export default function DateDisplay(
   const monthName = () => date().toLocaleDateString("default", { month: "long" });
   const day = () => ordinalSuffix(date().getDate());
   return (
-    <div class="w-3/5 mx-auto text-center text-3xl bg-zinc-900 border-1 border-zinc-800 my-4">
-      <span class="flex justify-evenly p-4 w-full h-full">
+    <div class="relative w-9/20 mx-auto text-center text-3xl bg-linear-0 from-zinc-850 to-zinc-900 border-1 border-zinc-800 my-4">
+      <span class="flex p-4 w-full h-full">
         <PrevNextButton date={date} setDate={setDate} offset={-1} />
-        {`${date().getFullYear()} ${monthName()} ${day()}`}
+        <div class="mx-auto">
+          {`${date().getFullYear()} ${monthName()} ${day()}`}
+        </div>
         <PrevNextButton date={date} setDate={setDate} offset={1} />
       </span>
       {isToday(date()) && (
-        <div class="text-sm">(Today)</div>
+        <div
+          class="absolute bottom-0 left-[50%] translate-x-[-50%] text-sm text-zinc-500"
+        >
+          (Today)
+        </div>
       )}
     </div>
   )
@@ -24,7 +30,7 @@ function PrevNextButton({ date, setDate, offset }: { date: Accessor<Date>, setDa
 ) {
   const disable = () => isToday(date()) && offset > 0;
   const [hovered, setHovered] = createSignal(false);
-  const arrowClass = () => `${offset > 0 && "rotate-180"}`
+  const arrowClass = () => `${offset > 0 ? "rotate-180 mr-2" : "ml-2"}`
 
   return (
     <button
