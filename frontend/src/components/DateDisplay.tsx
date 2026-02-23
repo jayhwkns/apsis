@@ -1,9 +1,11 @@
+import type { Accessor, Setter } from "solid-js";
+
 export default function DateDisplay(
-  { date, setDate }: { date: Date, setDate: React.Dispatch<React.SetStateAction<Date>> }
+  { date, setDate }: { date: Accessor<Date>, setDate: Setter<Date> }
 ) {
-  const monthName = date.toLocaleDateString("default", { month: "long" });
-  const day = ordinalSuffix(date.getDate());
-  const today = isToday(date);
+  const monthName = () => date().toLocaleDateString("default", { month: "long" });
+  const day = () => ordinalSuffix(date().getDate());
+  const today = () => isToday(date());
   return (
     <div>
       {/* This line looks terrible, but it makes sense trust.
@@ -11,10 +13,10 @@ export default function DateDisplay(
         the months, while setDate() takes care of the React state.
         Date constructor is needed because date.setDate returns a number
       */}
-      <button onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}> Yesterday </button>
-      {`${date.getFullYear()} ${monthName} ${day}`}
-      {today ? " (Today)" : ""}
-      <button disabled={today} onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}> Tomorrow </button>
+      <button onClick={() => setDate(new Date(date().setDate(date().getDate() - 1)))}> Yesterday </button>
+      {`${date().getFullYear()} ${monthName()} ${day()}`}
+      {today() ? " (Today)" : ""}
+      <button disabled={today()} onClick={() => setDate(new Date(date().setDate(date().getDate() + 1)))}> Tomorrow </button>
     </div>
   )
 }

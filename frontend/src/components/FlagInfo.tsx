@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import fetchFlag from "../utils/fetchFlag";
-import { defaultHeaders, serverUrl } from "../utils/tmpConsts";
+import { createEffect, createSignal } from "solid-js";
+import fetchFlag from "@/utils/fetchFlag";
+import { defaultHeaders, serverUrl } from "@/utils/tmpConsts";
 
 type FlagTable = Record<string, boolean>;
 
 export default function FlagInfo() {
-  const [featureFlagEnabled, setFeatureFlagEnabled] = useState(false);
+  const [featureFlagEnabled, setFeatureFlagEnabled] = createSignal(false);
 
-  const [flagTable, setFlagTable] = useState<FlagTable>({});
+  const [flagTable, setFlagTable] = createSignal<FlagTable>({});
 
   // Check if feature flag is enabled
-  useEffect(() => {
+  createEffect(() => {
     fetchFlag("flag-info", defaultHeaders)
       .then(setFeatureFlagEnabled)
   }, [])
 
   // Load data for feature
-  useEffect(() => {
+  createEffect(() => {
     // Skip fetch if feature flag is disabled
     if (!featureFlagEnabled) return;
 
@@ -31,7 +31,7 @@ export default function FlagInfo() {
   return (
     <>
       <h1>Feature Flag Information</h1>
-      {featureFlagEnabled ? (
+      {featureFlagEnabled() ? (
         <>
           <table>
             <thead>
@@ -42,7 +42,7 @@ export default function FlagInfo() {
             </thead>
             <tbody>
               {Object.entries(flagTable).map(e =>
-                <tr key={`feature-flag-row-${e}`}>
+                <tr>
                   <td>{e[0]}</td>
                   <td>{e[1] ? "true" : "false"}</td>
                 </tr>

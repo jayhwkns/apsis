@@ -1,19 +1,17 @@
-import { useState } from 'react';
-import './App.css';
-import ApodContainer from '@/components/ApodContainer';
+import { createSignal } from 'solid-js';
 import DateDisplay from '@/components/DateDisplay';
+import ApodContainer from '@/components/ApodContainer';
+import './App.css';
 
 function App() {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = createSignal(new Date());
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <DateDisplay date={date} setDate={setDate} />
-        <ApodContainer date={date} />
-      </header>
-    </div>
-  );
+    <>
+      <DateDisplay date={date} setDate={setDate} />
+      <ApodContainer date={date} />
+    </>
+  )
 }
 
 export default App;
