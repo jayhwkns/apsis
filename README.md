@@ -29,4 +29,4 @@ npm run dev
 
 - [ ] Make a docker-compose
 - [ ] Use an actual OpenFeature provider
-- [ ] Make it pretty
+- [x] Make it pretty
