@@ -12,7 +12,7 @@ like NASA's current websites, while the simpler view has more visual clarity.
 
 ### Preview
 
-<img width="1215" height="754" alt="image" src="https://github.com/user-attachments/assets/1ec592fd-afe7-462f-805f-d14b8f4b4aaf" />
+<img width="849" height="935" alt="image" src="https://github.com/user-attachments/assets/2ececbb6-40f6-46f7-875a-346f1ddb6310" />
 
 ### Running
 
