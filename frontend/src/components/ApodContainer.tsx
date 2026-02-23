@@ -6,7 +6,6 @@ import { marked } from "marked";
 import { createResource, Match, Switch } from 'solid-js'
 import type { Accessor } from "solid-js";
 
-
 const APOD_URL = "https://apod.nasa.gov"
 
 // Dependency list tells the container what variables to refresh on
@@ -37,7 +36,6 @@ export default function ApodContainer({ date }: { date: Accessor<Date> }) {
 }
 
 function ApodDisplay({ apod }: { apod: Apod }) {
-  // Omit date for now, we'll handle that above this level
   const imageCredits = () => apod.credits.image;
   const textCredits = () => apod.credits.text;
 
@@ -45,9 +43,7 @@ function ApodDisplay({ apod }: { apod: Apod }) {
     <>
       <h1>{apod.title}</h1>
       <img src={`${APOD_URL}/${apod.imageLink}`} alt={apod.title} />
-      <p>
-        Image Credit:
-      </p>
+      Image Credit{apod.copyright && " & Copyright"}:
       <ul>
         {imageCredits().map((e) =>
           <li><a href={e.link}>{e.name}</a></li>
