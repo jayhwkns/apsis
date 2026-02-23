@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import solid from "vite-plugin-solid"
 import path from "path"
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import tailwindcss from "@tailwindcss/vite"
 
 
 export default defineConfig({
@@ -14,13 +15,14 @@ export default defineConfig({
       // Enable esbuild polyfill plugins
       plugins: [
         NodeGlobalsPolyfillPlugin({
-            buffer: true
+          buffer: true
         })
       ]
     }
   },
   plugins: [
     solid(),
+    tailwindcss()
   ],
   resolve: {
     alias: {
