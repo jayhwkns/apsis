@@ -3,7 +3,7 @@
 :root {
   font-family: "Public Sans", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  font-size: 14pt;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 1);
@@ -13,4 +13,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: rgba(180, 180, 180);
+}
+
+p > a {
+  font-style: italic;
+  font-weight: 300;
 }
