@@ -1,4 +1,5 @@
-import type { Accessor, Setter } from "solid-js";
+import { BiRegularLeftArrow, BiSolidLeftArrow } from "solid-icons/bi";
+import { createSignal, type Accessor, type Setter } from "solid-js";
 
 export default function DateDisplay(
   { date, setDate }: { date: Accessor<Date>, setDate: Setter<Date> }
@@ -6,11 +7,15 @@ export default function DateDisplay(
   const monthName = () => date().toLocaleDateString("default", { month: "long" });
   const day = () => ordinalSuffix(date().getDate());
   return (
-    <div class="w-3/4 mx-auto text-center">
-      <PrevNextButton date={date} setDate={setDate} offset={-1} />
-      {`${date().getFullYear()} ${monthName()} ${day()}`}
-      {isToday(date()) ? " (Today)" : ""}
-      <PrevNextButton date={date} setDate={setDate} offset={1} />
+    <div class="w-3/5 mx-auto text-center text-3xl bg-zinc-900 border-1 border-zinc-800 my-4">
+      <span class="flex justify-evenly p-4 w-full h-full">
+        <PrevNextButton date={date} setDate={setDate} offset={-1} />
+        {`${date().getFullYear()} ${monthName()} ${day()}`}
+        <PrevNextButton date={date} setDate={setDate} offset={1} />
+      </span>
+      {isToday(date()) && (
+        <div class="text-sm">(Today)</div>
+      )}
     </div>
   )
 }
@@ -18,17 +23,27 @@ export default function DateDisplay(
 function PrevNextButton({ date, setDate, offset }: { date: Accessor<Date>, setDate: Setter<Date>, offset: number }
 ) {
   const disable = () => isToday(date()) && offset > 0;
+  const [hovered, setHovered] = createSignal(false);
+  const arrowClass = () => `${offset > 0 && "rotate-180"}`
+
   return (
     <button
       disabled={disable()}
+      class="hover:cursor-pointer"
       /*
         setDate() in the Date class takes care of overflow and underflow with
         the months, while setDate() takes care of the SolidJS state.
         Date constructor is needed because date.setDate returns a number
       */
       onClick={() => setDate(new Date(date().setDate(date().getDate() + offset)))}
+      on:mouseleave={() => setHovered(false)}
+      on:mouseover={() => setHovered(true)}
     >
-      {offset > 0 ? "Tomorrow" : "Yesterday"}
+      {hovered() ?
+        <BiSolidLeftArrow class={arrowClass()} />
+        :
+        <BiRegularLeftArrow class={arrowClass()} />
+      }
     </button>
   )
 }
