@@ -47,7 +47,7 @@ function ApodDisplay({ apod }: { apod: Apod }) {
     <>
       <a href={`${APOD_URL}/${apod.imageLink}`} >
         <img
-          class="mx-auto min-h-[80vh]"
+          class="mx-auto"
           src={`${APOD_URL}/${apod.imageLink}`}
           alt={apod.title}
         />
