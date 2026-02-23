@@ -26,7 +26,11 @@ export default function ApodContainer({ date }: { date: Accessor<Date> }) {
   return (
     <Switch>
       <Match when={apod.loading}>
-        <h1>Loading Astronomy Picture of the Day...</h1>
+        <h1
+          class="h-[100vh] text-center my-20 text-4xl"
+        >
+          Loading Astronomy Picture of the Day...
+        </h1>
       </Match>
       <Match when={!apod.loading && apod()}>
         <ApodDisplay apod={apod()!} />
