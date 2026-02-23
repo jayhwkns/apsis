@@ -7,7 +7,10 @@ function App() {
 
   return (
     <>
-      <main class="max-w-256 mx-auto p-4">
+      <h1 class="text-center my-5 text-5xl font-thin cursor-default">
+        <i>Apsis</i>
+      </h1>
+      <main class="max-w-256 mx-auto p-2">
         <DateDisplay date={date} setDate={setDate} />
         <ApodContainer date={date} />
       </main>

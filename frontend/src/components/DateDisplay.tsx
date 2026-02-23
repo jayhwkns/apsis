@@ -7,7 +7,7 @@ export default function DateDisplay(
   const monthName = () => date().toLocaleDateString("default", { month: "long" });
   const day = () => ordinalSuffix(date().getDate());
   return (
-    <div class="relative w-9/20 mx-auto text-center text-3xl bg-linear-0 from-zinc-850 to-zinc-900 border-1 border-zinc-800 my-4">
+    <div class="relative w-1/2 mx-auto text-center text-3xl bg-linear-0 from-zinc-850 to-zinc-900 border-1 border-zinc-800 my-2">
       <span class="flex p-4 w-full h-full">
         <PrevNextButton date={date} setDate={setDate} offset={-1} />
         <div class="mx-auto">
@@ -30,12 +30,16 @@ function PrevNextButton({ date, setDate, offset }: { date: Accessor<Date>, setDa
 ) {
   const disable = () => isToday(date()) && offset > 0;
   const [hovered, setHovered] = createSignal(false);
-  const arrowClass = () => `${offset > 0 ? "rotate-180 mr-2" : "ml-2"}`
+  const arrowClass = () => `${offset > 0 ?
+    `rotate-180 mr-2 ${disable() && "text-zinc-800"}`
+    :
+    "ml-2"
+    }`
 
   return (
     <button
       disabled={disable()}
-      class="hover:cursor-pointer"
+      class={disable() ? "" : "hover:cursor-pointer"}
       /*
         setDate() in the Date class takes care of overflow and underflow with
         the months, while setDate() takes care of the SolidJS state.
@@ -43,7 +47,7 @@ function PrevNextButton({ date, setDate, offset }: { date: Accessor<Date>, setDa
       */
       onClick={() => setDate(new Date(date().setDate(date().getDate() + offset)))}
       on:mouseleave={() => setHovered(false)}
-      on:mouseover={() => setHovered(true)}
+      on:mouseover={() => setHovered(!disable() && true)}
     >
       {hovered() ?
         <BiSolidLeftArrow class={arrowClass()} />
