@@ -41,18 +41,29 @@ function ApodDisplay({ apod }: { apod: Apod }) {
 
   return (
     <>
-      <h1>{apod.title}</h1>
-      <img src={`${APOD_URL}/${apod.imageLink}`} alt={apod.title} />
-      Image Credit{apod.copyright && " & Copyright"}:
-      <ul>
-        {imageCredits().map((e) =>
-          <li><a href={e.link}>{e.name}</a></li>
-        )}
-      </ul>
-      <p innerHTML={DOMPurify.sanitize(marked.parse(apod.description) as string)}></p>
-      {textCredits() && (<p>
-        Text Credit: <a href={textCredits()!.link}>{textCredits()!.name}</a>
-      </p>)}
+      <a href={`${APOD_URL}/${apod.imageLink}`} >
+        <img
+          class="mx-auto min-h-[80vh]"
+          src={`${APOD_URL}/${apod.imageLink}`}
+          alt={apod.title}
+        />
+      </a>
+      <article class="my-4 max-w-[80ch] mx-auto">
+        <h1 class="font-bold text-2xl">{apod.title}</h1>
+        <i class="text-xl">
+          Credit{apod.copyright && " & Copyright"}:
+          {imageCredits().map((e, i) =>
+            <a href={e.link}>{i != 0 && ","} {e.name}</a>
+          )}
+        </i>
+        <p
+          class="my-4"
+          innerHTML={DOMPurify.sanitize(marked.parse(apod.description) as string)}
+        />
+        {textCredits() && (<small>
+          Text Credit: <a href={textCredits()!.link}>{textCredits()!.name}</a>
+        </small>)}
+      </article>
     </>
   )
 }
