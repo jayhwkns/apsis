@@ -7,10 +7,10 @@ function App() {
 
   return (
     <>
-      <div class="max-w-128 mx-auto">
+      <main class="max-w-256 mx-auto p-4">
         <DateDisplay date={date} setDate={setDate} />
         <ApodContainer date={date} />
-      </div>
+      </main>
     </>
   )
 }

@@ -5,19 +5,31 @@ export default function DateDisplay(
 ) {
   const monthName = () => date().toLocaleDateString("default", { month: "long" });
   const day = () => ordinalSuffix(date().getDate());
-  const today = () => isToday(date());
   return (
-    <div>
-      {/* This line looks terrible, but it makes sense trust.
-        setDate() in the Date class takes care of overflow and underflow with
-        the months, while setDate() takes care of the React state.
-        Date constructor is needed because date.setDate returns a number
-      */}
-      <button onClick={() => setDate(new Date(date().setDate(date().getDate() - 1)))}> Yesterday </button>
+    <div class="w-3/4 mx-auto text-center">
+      <PrevNextButton date={date} setDate={setDate} offset={-1} />
       {`${date().getFullYear()} ${monthName()} ${day()}`}
-      {today() ? " (Today)" : ""}
-      <button disabled={today()} onClick={() => setDate(new Date(date().setDate(date().getDate() + 1)))}> Tomorrow </button>
+      {isToday(date()) ? " (Today)" : ""}
+      <PrevNextButton date={date} setDate={setDate} offset={1} />
     </div>
+  )
+}
+
+function PrevNextButton({ date, setDate, offset }: { date: Accessor<Date>, setDate: Setter<Date>, offset: number }
+) {
+  const disable = () => isToday(date()) && offset > 0;
+  return (
+    <button
+      disabled={disable()}
+      /*
+        setDate() in the Date class takes care of overflow and underflow with
+        the months, while setDate() takes care of the SolidJS state.
+        Date constructor is needed because date.setDate returns a number
+      */
+      onClick={() => setDate(new Date(date().setDate(date().getDate() + offset)))}
+    >
+      {offset > 0 ? "Tomorrow" : "Yesterday"}
+    </button>
   )
 }
 
