@@ -23,3 +23,8 @@ p > a {
   font-style: italic;
   font-weight: 300;
 }
+
+footer > * > a {
+  color: rgba(100, 100, 100);
+  font-style: italic;
+}
